@@ -1,8 +1,8 @@
 {
-  "name": "hw-react-10",
+  "name": "hw-react-17",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ind0zer.github.io/hw-react-10",
+  "homepage": "https://ind0zer.github.io/hw-react-17",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
