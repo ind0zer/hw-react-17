@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useContacts } from '../contexts/ContactsContext';
 
-export const ContactForm = ({ onAddContact }) => {
+export const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const nameInputRef = useRef(null);
+  const { addContact } = useContacts();
+
+  // Автофокус на поле имени при монтировании компонента
+  useEffect(() => {
+    nameInputRef.current?.focus();
+  }, []);
 
   const handleNameChange = (e) => {
     setName(e.target.value);
@@ -14,9 +22,13 @@ export const ContactForm = ({ onAddContact }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onAddContact({ name, number });
-    setName('');
-    setNumber('');
+    const success = addContact({ name, number });
+    if (success) {
+      setName('');
+      setNumber('');
+      // Возвращаем фокус на поле имени после успешного добавления
+      nameInputRef.current?.focus();
+    }
   };
 
   return (
@@ -24,6 +36,7 @@ export const ContactForm = ({ onAddContact }) => {
       <div className="form-group">
         <label>Name</label>
         <input
+          ref={nameInputRef}
           type="text"
           name="name"
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"

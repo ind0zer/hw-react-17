@@ -1,15 +1,19 @@
 import { ContactItem } from './ContactItem';
+import { useContacts } from '../contexts/ContactsContext';
 
-export const ContactList = ({ contacts, onDeleteContact }) => {
+export const ContactList = () => {
+  const { getFilteredContacts, deleteContact } = useContacts();
+  const filteredContacts = getFilteredContacts();
+
   return (
     <ul className="contact-list">
-      {contacts.map(({ id, name, number }) => (
+      {filteredContacts.map(({ id, name, number }) => (
         <ContactItem 
           key={id} 
           id={id} 
           name={name} 
           number={number}
-          onDelete={onDeleteContact} 
+          onDelete={deleteContact} 
         />
       ))}
     </ul>
