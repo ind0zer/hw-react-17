@@ -7,7 +7,6 @@ export const ContactForm = () => {
   const nameInputRef = useRef(null);
   const { addContact } = useContacts();
 
-  // Автофокус на поле имени при монтировании компонента
   useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
@@ -26,7 +25,6 @@ export const ContactForm = () => {
     if (success) {
       setName('');
       setNumber('');
-      // Возвращаем фокус на поле имени после успешного добавления
       nameInputRef.current?.focus();
     }
   };
