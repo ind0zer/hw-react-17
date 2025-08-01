@@ -1,48 +1,49 @@
-import { useState, useRef, useEffect } from 'react';
-import { useContacts } from '../contexts/ContactsContext';
+import { useRef, useEffect } from 'react';
+import { useContactForm } from '../hooks/useContactForm';
 
 export const ContactForm = () => {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
   const nameInputRef = useRef(null);
-  const { addContact } = useContacts();
+  const { formState, setField, handleSubmit } = useContactForm();
 
   useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
 
   const handleNameChange = (e) => {
-    setName(e.target.value);
+    setField('name', e.target.value);
   };
 
   const handleNumberChange = (e) => {
-    setNumber(e.target.value);
+    setField('number', e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const success = addContact({ name, number });
+  const onSubmit = async (e) => {
+    const success = await handleSubmit(e);
     if (success) {
-      setName('');
-      setNumber('');
       nameInputRef.current?.focus();
     }
   };
 
   return (
-    <form className="contact-form" onSubmit={handleSubmit}>
+    <form className="contact-form" onSubmit={onSubmit}>
       <div className="form-group">
         <label>Name</label>
         <input
           ref={nameInputRef}
           type="text"
           name="name"
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-yaА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           required
-          value={name}
+          value={formState.name}
           onChange={handleNameChange}
+          disabled={formState.isSubmitting}
         />
+        {formState.errors.name && (
+          <span className="error-message" style={{ color: 'red', fontSize: 'small' }}>
+            {formState.errors.name}
+          </span>
+        )}
       </div>
       <div className="form-group">
         <label>Number</label>
@@ -52,11 +53,23 @@ export const ContactForm = () => {
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required
-          value={number}
+          value={formState.number}
           onChange={handleNumberChange}
+          disabled={formState.isSubmitting}
         />
+        {formState.errors.number && (
+          <span className="error-message" style={{ color: 'red', fontSize: 'small' }}>
+            {formState.errors.number}
+          </span>
+        )}
       </div>
-      <button className="btn" type="submit">Add contact</button>
+      <button 
+        className="btn" 
+        type="submit"
+        disabled={formState.isSubmitting}
+      >
+        {formState.isSubmitting ? 'Adding...' : 'Add contact'}
+      </button>
     </form>
   );
 };
